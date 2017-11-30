@@ -24,6 +24,9 @@ var h_Iron_Man = ["_", "_", "_", "_", " ", "_", "_", "_"];
 //true words (the solution):
 var t_Iron_Man = ["I", "r", "o", "n", " ", "M", "a", "n"];
 
+//var dictionary for list of h and t words:
+//var wordList = {
+
 //__________________________________________________________________________________________________________
 //NOTE: LATER ON CREATE DICTIONARY FOR HIDDEN AND TRUE WORDS
 //TO REPLACE CURRENT INPUTS IN THE FOLLOWING FUNCTIONS!!
@@ -33,6 +36,9 @@ document.onkeyup = function(event) {
 	checkCompatible(event.key, h_Iron_Man, t_Iron_Man);
 }
 
+//NEED RUN GAME FUNCTION THAT WILL CALL CHECKCOMPATIBLE AND WORK FOR ANY Pair of ARRAYs!!^^ chosen by setGame();
+//AND A SET GAME FUNCTION THAT WILL DETERMINE WHICH HWORD AND TWORD TO BE USED. randomly chosen via wordlist
+
 //Goes through the trueWord and checks if the chosenLetter matches any of the items in the trueWord array.
 //also looks to see if the chosen letter doesn't match any letters in trueWord.
 //Then runs checkComplete.
@@ -40,20 +46,35 @@ function checkCompatible(chosenLetter, hiddenWord, trueWord) {
 	var a = 0;
 	for (i=0; i<trueWord.length; i++) {
 		if (chosenLetter.toLowerCase() == trueWord[i].toLowerCase()) {
-			console.log("chosenLetter matches a letter in the trueWord!");
-			reveal(chosenLetter, i, h_Iron_Man);
+			if (chosenLetter != " ") {
+				if (chosenLetter != hiddenWord[i]) {
+					console.log("chosenLetter matches a letter in the trueWord!");
+					reveal(chosenLetter, i, hiddenWord);
+				}
+			}
 		}
 		else {
 			a++
 		}
 	}
 	if (a == trueWord.length) {
-		numWrongLetters++;
-		wrongLetters.push(chosenLetter);
-		console.log("chosenLetter doesn't match any letter in the trueWord!");
+		var b =0;
+		for (i=0; i<wrongLetters.length; i++) {
+			if (chosenLetter != wrongLetters[i]) {
+				b++;
+			}
+		}
+		if ( b == wrongLetters.length) {
+			numWrongLetters++;
+			wrongLetters.push(chosenLetter);
+			console.log("chosenLetter doesn't match any letter in the trueWord!");
+			console.log("numwrongletters="+numWrongLetters);
+			console.log("list of wrongletters:");
+			printArray(wrongLetters);
+		}
 	}
 	if (numWrongLetters == lives) {
-		gameOver();
+		gameOver(hiddenWord);
 	}
 	checkComplete(hiddenWord);
 }
@@ -61,7 +82,7 @@ function checkCompatible(chosenLetter, hiddenWord, trueWord) {
 //If the letter has not yet been revealed,
 //Takes the chosenLetter and replaces the blank space in hiddenWord at that index
 function reveal(chosenLetter, index, hiddenWord) {
-	if (chosenLetter != hiddenWord[index]) {}
+	if (chosenLetter != hiddenWord[index]) {
 		hiddenWord[index] = chosenLetter;
 		numRevealedLetters++;
 		revealedLetters.push(chosenLetter);
@@ -69,18 +90,19 @@ function reveal(chosenLetter, index, hiddenWord) {
 		console.log("revealedLetters:");
 		printArray(revealedLetters);
 	}
+}
 
 //Goes through the hiddenWord array and checks if there are any hidden letters left.
 //If the number of completedLetters matches the length of the word, numCompletedWords will
 //increment, adding to the player's score, and add the word to a list of completed words.
 function checkComplete(hiddenWord) {
 	for (i=0; i<hiddenWord.length; i++) {
-		if (hiddenWord[i] != "_") {
+		if (hiddenWord[i] != "_" && hiddenWord[i] != " ") {
 			numCompletedLetters++;
-			console.log("numCompletedLetters="+numCompletedLetters);
 		}
 	}
-	if (numCompletedLetters == hiddenWord.length) {
+	console.log("numCompletedLetters="+numCompletedLetters); //after reset numComLetters still keeping previously incremented value from previously completed Letters
+	if (numCompletedLetters == actualLength(hiddenWord)) {
 		numCompletedWords++;
 		completedWords.push(hiddenWord);
 		console.log("numCompletedWords is:"+numCompletedWords);
@@ -95,15 +117,15 @@ function checkComplete(hiddenWord) {
 }
 
 //word resets, and tracking variables too.
-function resetWord() {
-	h_Iron_Man = ["_", "_", "_", "_", " ", "_", "_", "_"];
+function resetWord(chosenArray) {
+	blankSlate(chosenArray);
 	revealedLetters = [];
 	wrongLetters = [];
 	numRevealedLetters = 0;
 	numWrongLetters = 0;
 	numCompletedLetters = 0;
 	console.log("hiddenWord after reset is now:");
-	printArray(h_Iron_Man);
+	printArray(chosenArray);
 	console.log("revealedLetters after reset is now:");
 	printArray(revealedLetters);
 	console.log("wrongLetters after reset is now:");
@@ -114,10 +136,10 @@ function resetWord() {
 }
 
 //shows the game is over, user loses, word resets.
-function gameOver() {
+function gameOver(chosenArray) {
 	//show game over
 	console.log("game over!");
-	resetWord();
+	resetWord(chosenArray);
 }
 
 //prints chosenArray for testing purposes in the console
@@ -127,12 +149,31 @@ function printArray (chosenArray) {
 	}
 }
 
-//need a function to check for spaces, in order to subtract that from the actual length of the hidden word
-//and to prevent a space from counting as a revealed letter.
-//also forsomereason completedletters is adding an extra in the beginning.
-//and a final function is needed to restore the lowercase to an uppercase when the hidden word is completed.
-//then we can move onto the display functions and the html + css
+//Takes an array for a parameter and return a value equal to the length of the array,
+//minus the spaces (" ") in the word.
+function actualLength(chosenArray) {
+	var a = 0;
+	var b = chosenArray.length;
+	for (i=0; i<b; i++) {
+		if (chosenArray[i] == " ") {
+			a++;
+		}
+	}
+	return b-a;
+}
 
+//Goes through an Array and turns each non-space item into an underscore.
+function blankSlate (chosenArray) {
+	for (i=0; i<chosenArray.length; i++) {
+		if (chosenArray[i] != " ") {
+			chosenArray[i] = "_";
+		}
+	}
+}
+
+
+//then we can move onto the display functions and the html + css
+//
 
 
 
