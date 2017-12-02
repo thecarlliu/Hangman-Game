@@ -14,6 +14,8 @@ var lives = 7;
 var numCompletedLetters = 0;
 var numCompletedWords = 0;
 
+//Display Variables:
+
 //Our Words:
 //h = hidden
 //t = true
@@ -27,12 +29,14 @@ var t_Iron_Man = ["I", "r", "o", "n", " ", "M", "a", "n"];
 //var dictionary for list of h and t words:
 //var wordList = {
 
-//__________________________________________________________________________________________________________
+//_________________________________________Mechanics________________________________________________________
+
 //NOTE: LATER ON CREATE DICTIONARY FOR HIDDEN AND TRUE WORDS
 //TO REPLACE CURRENT INPUTS IN THE FOLLOWING FUNCTIONS!!
 
 //On key up, run the checkCompatible function
 document.onkeyup = function(event) {
+	addToPrimaryDisplay(event.key); //testing TEMPORARY
 	checkCompatible(event.key, h_Iron_Man, t_Iron_Man);
 }
 
@@ -171,9 +175,19 @@ function blankSlate (chosenArray) {
 	}
 }
 
+//______________________________________________Display_____________________________________________________
 
-//then we can move onto the display functions and the html + css
-//
+//Calls addLetter and appends the created element from that to the primaryDisplay.
+function addToPrimaryDisplay (chosenLetter) {
+	var display = document.getElementById("primaryDisplay");
+	display.appendChild(addLetter(chosenLetter));
+}
+
+//Creates a single letterDisplay element and appends the chosenLetter
+function addLetter (chosenLetter) {
+	var eachLetterDisplay = document.createElement("p");
+	chosenLetter = eachLetterDisplay.innerHTML;
+}
 
 
 
