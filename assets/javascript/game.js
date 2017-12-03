@@ -189,6 +189,9 @@ function addLetter (chosenLetter) {
 	chosenLetter = eachLetterDisplay.innerHTML;
 }
 
+//change above functions to jquery stuff, and still getting not of type node exception
+//maybe translate event key to text function is needed.
+
 
 
 
