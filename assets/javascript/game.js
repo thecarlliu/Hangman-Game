@@ -1,8 +1,12 @@
 
 //__________________________________Hangman-Game: Marvel Edition___________________________________________
+//Notes:
+//Couldn't get whitespace to show as strring, so used hyphens as a substitute.
+//To improve chooseWord(), need to identify what words have already been completed, so that no word is
+//brought up twice or more. Therefore we need a set order or words, and a function to randomize the order.
+//No time though, maybe later.
+//________________________________________VARIABLES:_______________________________________________________
 
-//VARIABLES:
-var userInput;
 
 //Vars that track values:
 var revealedLetters = [];
@@ -17,31 +21,65 @@ var numCompletedWords = 0;
 //Display Variables:
 
 //Our Words:
-//h = hidden
-//t = true
+
+//Current words:
+var currentHiddenWord;
+var currentTrueWord;
 
 //hidden words:
-var h_Iron_Man = ["_", "_", "_", "_", " ", "_", "_", "_"];
+var h_Iron_Man = ["_", "_", "_", "_", "-", "_", "_", "_"];
+var h_Captain_America = ["_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_", "_", "_"];
+var h_Black_Panther = ["_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_", "_", "_"];
+var h_Black_Widow = ["_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_"];
+var h_Spider_Man = ["_", "_", "_", "_", "_", "_", "-", "_", "_", "_"];
+var h_Ant_Man = ["_", "_", "_", "-", "_", "_", "_"];
+var h_Incredible_Hulk = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_"];
+var h_Vision = ["_", "_", "_", "_", "_", "_"];
+var h_Scarlet_Witch = ["_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_"];
+var h_Hawkeye = ["_", "_", "_", "_", "_", "_", "_"];
 
 //true words (the solution):
-var t_Iron_Man = ["I", "r", "o", "n", " ", "M", "a", "n"];
+var t_Iron_Man = ["I", "r", "o", "n", "-", "M", "a", "n"];
+var t_Captain_America = ["C", "a", "p", "t", "a", "i", "n", "-", "A", "m", "e", "r", "i", "c", "a"];
+var t_Black_Panther = ["B", "l", "a", "c", "k", "-", "P", "a", "n", "t", "h", "e", "r"];
+var t_Black_Widow = ["B", "l", "a", "c", "k", "-", "W", "i", "d", "o", "w"];
+var t_Spider_Man = ["S", "p", "i", "d", "e", "r", "-", "M", "a", "n"];
+var t_Ant_Man = ["A", "n", "t", "-", "M", "a", "n"];
+var t_Incredible_Hulk = ["I", "n", "c", "r", "e", "d", "i", "b", "l", "e", "-", "H", "u", "l", "k"];
+var t_Vision = ["V", "i", "s", "i", "o", "n"];
+var t_Scarlet_Witch = ["S", "c", "a", "r", "l", "e", "t", "-", "W", "i", "t", "c", "h"];
+var t_Hawkeye = ["H", "a", "w", "k", "e", "y", "e"];
 
-//var dictionary for list of h and t words:
-//var wordList = {
+//hiddenWords list:
+var hiddenWords = [h_Iron_Man, h_Captain_America, h_Black_Panther, h_Black_Widow, h_Spider_Man, h_Ant_Man, h_Incredible_Hulk, h_Vision, h_Scarlet_Witch, h_Hawkeye];
+
+//trueWords list:
+var trueWords = [t_Iron_Man, t_Captain_America, t_Black_Panther, t_Black_Widow, t_Spider_Man, t_Ant_Man, t_Incredible_Hulk, t_Vision, t_Scarlet_Witch, t_Hawkeye];
 
 //_________________________________________Mechanics________________________________________________________
 
 //NOTE: LATER ON CREATE DICTIONARY FOR HIDDEN AND TRUE WORDS
 //TO REPLACE CURRENT INPUTS IN THE FOLLOWING FUNCTIONS!!
 
-//On key up, run the checkCompatible function
-document.onkeyup = function(event) {
-	addToPrimaryDisplay(event.key); //testing TEMPORARY
-	checkCompatible(event.key, h_Iron_Man, t_Iron_Man);
+runGame();
+
+//Sets the game, randomly chooses a new word when a new game has started.
+function runGame() {
+	chooseWord();
+	setWordDisplay(currentHiddenWord);
 }
 
-//NEED RUN GAME FUNCTION THAT WILL CALL CHECKCOMPATIBLE AND WORK FOR ANY Pair of ARRAYs!!^^ chosen by setGame();
-//AND A SET GAME FUNCTION THAT WILL DETERMINE WHICH HWORD AND TWORD TO BE USED. randomly chosen via wordlist
+function chooseWord() {
+	var a = Math.floor(Math.random() * 10);
+	console.log("word chosen: Number "+a);
+	currentHiddenWord = hiddenWords[a];
+	currentTrueWord = trueWords[a];
+}
+
+//On key up, run the checkCompatible function
+document.onkeyup = function(event) {
+	checkCompatible(event.key, currentHiddenWord, currentTrueWord);
+}
 
 //Goes through the trueWord and checks if the chosenLetter matches any of the items in the trueWord array.
 //also looks to see if the chosen letter doesn't match any letters in trueWord.
@@ -50,10 +88,11 @@ function checkCompatible(chosenLetter, hiddenWord, trueWord) {
 	var a = 0;
 	for (i=0; i<trueWord.length; i++) {
 		if (chosenLetter.toLowerCase() == trueWord[i].toLowerCase()) {
-			if (chosenLetter != " ") {
+			if (chosenLetter != "-") {
 				if (chosenLetter != hiddenWord[i]) {
 					console.log("chosenLetter matches a letter in the trueWord!");
 					reveal(chosenLetter, i, hiddenWord);
+					scoreRevealedLetters();
 				}
 			}
 		}
@@ -69,17 +108,23 @@ function checkCompatible(chosenLetter, hiddenWord, trueWord) {
 			}
 		}
 		if ( b == wrongLetters.length) {
+			console.log(lives + " lives currently");
 			numWrongLetters++;
 			wrongLetters.push(chosenLetter);
+			addWrongLetters(chosenLetter);
 			console.log("chosenLetter doesn't match any letter in the trueWord!");
 			console.log("numwrongletters="+numWrongLetters);
 			console.log("list of wrongletters:");
 			printArray(wrongLetters);
+			lives = lives - 1;
+			console.log("Lives: "+lives+" after deduction");
 		}
 	}
-	if (numWrongLetters == lives) {
+	if (lives == 0) {
 		gameOver(hiddenWord);
 	}
+	scoreLives();
+	setWordDisplay(hiddenWord);
 	checkComplete(hiddenWord);
 }
 
@@ -101,7 +146,7 @@ function reveal(chosenLetter, index, hiddenWord) {
 //increment, adding to the player's score, and add the word to a list of completed words.
 function checkComplete(hiddenWord) {
 	for (i=0; i<hiddenWord.length; i++) {
-		if (hiddenWord[i] != "_" && hiddenWord[i] != " ") {
+		if (hiddenWord[i] != "_" && hiddenWord[i] != "-") {
 			numCompletedLetters++;
 		}
 	}
@@ -111,23 +156,29 @@ function checkComplete(hiddenWord) {
 		completedWords.push(hiddenWord);
 		console.log("numCompletedWords is:"+numCompletedWords);
 		printArray(completedWords);
-		resetWord();
+		scoreCompletedWords(hiddenWord);
+		resetWord(hiddenWord);
+		setWordDisplay(hiddenWord);
+		congratulate();
 	}
 	else {
 		numCompletedLetters = 0;
 	}
 	console.log("hiddenWord now looks like:");
 	printArray(hiddenWord);
+	victory();
 }
 
 //word resets, and tracking variables too.
 function resetWord(chosenArray) {
 	blankSlate(chosenArray);
+	lives = 7;
 	revealedLetters = [];
 	wrongLetters = [];
-	numRevealedLetters = 0;
 	numWrongLetters = 0;
 	numCompletedLetters = 0;
+	scoreLives();
+	resetWrongLetters();
 	console.log("hiddenWord after reset is now:");
 	printArray(chosenArray);
 	console.log("revealedLetters after reset is now:");
@@ -144,6 +195,16 @@ function gameOver(chosenArray) {
 	//show game over
 	console.log("game over!");
 	resetWord(chosenArray);
+	numRevealedLetters = 0;
+	scoreRevealedLetters();
+	var gameOver = confirm("You failed to save the day! Try again?");
+	if (gameOver) {
+		runGame();
+	}
+	else {
+		alert("Boo!");
+		runGame();
+	}
 }
 
 //prints chosenArray for testing purposes in the console
@@ -159,7 +220,7 @@ function actualLength(chosenArray) {
 	var a = 0;
 	var b = chosenArray.length;
 	for (i=0; i<b; i++) {
-		if (chosenArray[i] == " ") {
+		if (chosenArray[i] == "-") {
 			a++;
 		}
 	}
@@ -169,29 +230,91 @@ function actualLength(chosenArray) {
 //Goes through an Array and turns each non-space item into an underscore.
 function blankSlate (chosenArray) {
 	for (i=0; i<chosenArray.length; i++) {
-		if (chosenArray[i] != " ") {
+		if (chosenArray[i] != "-") {
 			chosenArray[i] = "_";
 		}
 	}
 }
 
+//Congratulates the player, asks if they want to play again.
+function congratulate() {
+	var playAgain = confirm("Nice! You have indentified a hero, keep going?");
+	if (playAgain) {
+		runGame();
+	}
+	else {
+		alert("Boo!");
+		runGame();
+	}
+}
+
+function victory() {
+	if (numCompletedWords == 10) {
+		var victory = confirm("You have found enough heroes to help fight Thanos! The Avengers appreciate your help. Play again?");
+		if (victory) {
+			resetCompletedWords();
+			numRevealedLetters = 0;
+			scoreRevealedLetters();
+			runGame();
+		}
+		else {
+			alert("Boo!");
+			numCompletedWords = 0;
+			numRevealedLetters = 0;
+			scoreRevealedLetters();
+			resetCompletedWords();
+			runGame();
+		}
+	}
+
+}
+
 //______________________________________________Display_____________________________________________________
 
-//Calls addLetter and appends the created element from that to the primaryDisplay.
-function addToPrimaryDisplay (chosenLetter) {
-	var display = document.getElementById("primaryDisplay");
-	display.appendChild(addLetter(chosenLetter));
+
+//Sets the word display for the hidden word on the primary Display.
+//This is where we will show the revealed letters and update the hiddenWord.
+function setWordDisplay (hiddenWord) {
+	var showWord = "";
+	for (i=0; i<hiddenWord.length; i++) {
+		showWord = showWord + " " + hiddenWord[i] + " ";
+	}
+	document.getElementById("primaryDisplay").innerHTML = showWord;
 }
 
-//Creates a single letterDisplay element and appends the chosenLetter
-function addLetter (chosenLetter) {
-	var eachLetterDisplay = document.createElement("p");
-	chosenLetter = eachLetterDisplay.innerHTML;
+function scoreLives () {
+	document.getElementById("livesDisplay").innerHTML = "Lives: " + lives;
 }
 
-//change above functions to jquery stuff, and still getting not of type node exception
-//maybe translate event key to text function is needed.
+//Adds the chosen letter to the secondaryDisplay.
+//This is where we will show the wrong letters.
+function addWrongLetters (chosenLetter) {
+	document.getElementById("secondaryDisplay").innerHTML = document.getElementById("secondaryDisplay").innerHTML + " " + chosenLetter + ", ";
+}
 
+//Resets Wrong Letters.
+function resetWrongLetters() {
+	document.getElementById("secondaryDisplay").innerHTML = "Wrong Letters: ";
+}
+
+//Shows points for letters user has revealed.
+function scoreRevealedLetters () {
+	document.getElementById("scoreDisplay1").innerHTML = "Score: " + numRevealedLetters;
+}
+
+//Shows list of words user has completed.
+function scoreCompletedWords (hiddenWord) {
+	var showWord = " ";
+	for (i=0; i<hiddenWord.length; i++) {
+		showWord = showWord + " " + hiddenWord[i] + " ";
+	}
+	document.getElementById("scoreDisplay2").innerHTML = document.getElementById("scoreDisplay2").innerHTML + "<br>" + showWord;
+}
+
+//Resets the completed word list after a victory.
+function resetCompletedWords() {
+	document.getElementById("scoreDisplay2").innerHTML = "Heroes Found: ";
+}
 
 
 

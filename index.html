@@ -4,22 +4,31 @@
     <meta charset="UTF-8">
     <title>Hangman! Marvel Edition</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../Hangman-Game/assets/css/style.css" />
+    <script src="../Hangman-Game/assets/javascript/game.js"></script>
   </head>
 
-  <body>
-
-    <p>Hangman! Marvel Edition</p>
+  <body class ="bg">
 
     <div class="container">
       <div class="row">
         <div class="col-md-offset-2 col-md-8">
-          <div class="jumbotron">
+            <img src="../Hangman-Game/assets/images/gameTitle.png">
+          <div class="jumbotron gameScreen">
+
+            <span id="Instructions"><strong>Quickly! The Avengers need your help to identify heroes who can help fight Thanos! Press any key to get started</strong></span>
             <h2>
-              <span id="gameTitle"><strong>Hangman!</strong></span>
-              <br>
               <span id="primaryDisplay"></span>
             </h2>
+            <br>
+            <span id="livesDisplay">Lives: 7</span>
+            <br>
+            <span id="secondaryDisplay">Wrong Letters:</span>
+            <br>
+            <span id="scoreDisplay1">Score: </span>
+            <br>
+            <span id="scoreDisplay2">Heroes Found: </span>
+
           </div>
         </div>
       </div>
@@ -30,5 +39,3 @@
   </body>
 
   </html>
- <!--  dont forget to push again -->
-<!--  !!!!!!!!!!!!!!!!!!!!!!! -->
