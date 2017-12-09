@@ -27,27 +27,27 @@ var currentHiddenWord;
 var currentTrueWord;
 
 //hidden words:
-var h_Iron_Man = ["_", "_", "_", "_", "-", "_", "_", "_"];
-var h_Captain_America = ["_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_", "_", "_"];
-var h_Black_Panther = ["_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_", "_", "_"];
-var h_Black_Widow = ["_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_"];
-var h_Spider_Man = ["_", "_", "_", "_", "_", "_", "-", "_", "_", "_"];
-var h_Ant_Man = ["_", "_", "_", "-", "_", "_", "_"];
-var h_Incredible_Hulk = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_"];
+var h_Iron_Man = ["_", "_", "_", "_", "&nbsp;", "_", "_", "_"];
+var h_Captain_America = ["_", "_", "_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_", "_", "_", "_", "_"];
+var h_Black_Panther = ["_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_", "_", "_", "_", "_"];
+var h_Black_Widow = ["_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_", "_", "_"];
+var h_Spider_Man = ["_", "_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_"];
+var h_Ant_Man = ["_", "_", "_", "&nbsp;", "_", "_", "_"];
+var h_Incredible_Hulk = ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_", "_"];
 var h_Vision = ["_", "_", "_", "_", "_", "_"];
-var h_Scarlet_Witch = ["_", "_", "_", "_", "_", "_", "_", "-", "_", "_", "_", "_", "_"];
+var h_Scarlet_Witch = ["_", "_", "_", "_", "_", "_", "_", "&nbsp;", "_", "_", "_", "_", "_"];
 var h_Hawkeye = ["_", "_", "_", "_", "_", "_", "_"];
 
 //true words (the solution):
-var t_Iron_Man = ["I", "r", "o", "n", "-", "M", "a", "n"];
-var t_Captain_America = ["C", "a", "p", "t", "a", "i", "n", "-", "A", "m", "e", "r", "i", "c", "a"];
-var t_Black_Panther = ["B", "l", "a", "c", "k", "-", "P", "a", "n", "t", "h", "e", "r"];
-var t_Black_Widow = ["B", "l", "a", "c", "k", "-", "W", "i", "d", "o", "w"];
-var t_Spider_Man = ["S", "p", "i", "d", "e", "r", "-", "M", "a", "n"];
-var t_Ant_Man = ["A", "n", "t", "-", "M", "a", "n"];
-var t_Incredible_Hulk = ["I", "n", "c", "r", "e", "d", "i", "b", "l", "e", "-", "H", "u", "l", "k"];
+var t_Iron_Man = ["I", "r", "o", "n", "&nbsp;", "M", "a", "n"];
+var t_Captain_America = ["C", "a", "p", "t", "a", "i", "n", "&nbsp;", "A", "m", "e", "r", "i", "c", "a"];
+var t_Black_Panther = ["B", "l", "a", "c", "k", "&nbsp;", "P", "a", "n", "t", "h", "e", "r"];
+var t_Black_Widow = ["B", "l", "a", "c", "k", "&nbsp;", "W", "i", "d", "o", "w"];
+var t_Spider_Man = ["S", "p", "i", "d", "e", "r", "&nbsp;", "M", "a", "n"];
+var t_Ant_Man = ["A", "n", "t", "&nbsp;", "M", "a", "n"];
+var t_Incredible_Hulk = ["I", "n", "c", "r", "e", "d", "i", "b", "l", "e", "&nbsp;", "H", "u", "l", "k"];
 var t_Vision = ["V", "i", "s", "i", "o", "n"];
-var t_Scarlet_Witch = ["S", "c", "a", "r", "l", "e", "t", "-", "W", "i", "t", "c", "h"];
+var t_Scarlet_Witch = ["S", "c", "a", "r", "l", "e", "t", "&nbsp;", "W", "i", "t", "c", "h"];
 var t_Hawkeye = ["H", "a", "w", "k", "e", "y", "e"];
 
 //hiddenWords list:
@@ -88,7 +88,7 @@ function checkCompatible(chosenLetter, hiddenWord, trueWord) {
 	var a = 0;
 	for (i=0; i<trueWord.length; i++) {
 		if (chosenLetter.toLowerCase() == trueWord[i].toLowerCase()) {
-			if (chosenLetter != "-") {
+			if (chosenLetter != SPACEBAR) { //how to detect spacebar???
 				if (chosenLetter != hiddenWord[i]) {
 					console.log("chosenLetter matches a letter in the trueWord!");
 					reveal(chosenLetter, i, hiddenWord);
@@ -146,7 +146,7 @@ function reveal(chosenLetter, index, hiddenWord) {
 //increment, adding to the player's score, and add the word to a list of completed words.
 function checkComplete(hiddenWord) {
 	for (i=0; i<hiddenWord.length; i++) {
-		if (hiddenWord[i] != "_" && hiddenWord[i] != "-") {
+		if (hiddenWord[i] != "_" && hiddenWord[i] != "&nbsp;") {
 			numCompletedLetters++;
 		}
 	}
@@ -220,7 +220,7 @@ function actualLength(chosenArray) {
 	var a = 0;
 	var b = chosenArray.length;
 	for (i=0; i<b; i++) {
-		if (chosenArray[i] == "-") {
+		if (chosenArray[i] == "&nbsp;") {
 			a++;
 		}
 	}
@@ -230,7 +230,7 @@ function actualLength(chosenArray) {
 //Goes through an Array and turns each non-space item into an underscore.
 function blankSlate (chosenArray) {
 	for (i=0; i<chosenArray.length; i++) {
-		if (chosenArray[i] != "-") {
+		if (chosenArray[i] != "&nbsp;") {
 			chosenArray[i] = "_";
 		}
 	}
